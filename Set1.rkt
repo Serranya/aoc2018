@@ -1041,15 +1041,17 @@
 
 #;(foldl + 0 input)
 
-(define (find-recurring-freq ops acc seen)
-  (if (set-member? seen acc)
-      acc
-      (find-recurring-freq
-       (rotate-list ops)
-       (+ (first ops) acc)
-       (begin (set-add! seen acc) seen))))
+(define (find-recurring-freq ops)
+  (define (find-recurring-freq* ops acc seen)
+    (define (rotate-list lst)
+      (append (rest lst) (cons (first lst) null)))
+    (if (set-member? seen acc)
+        acc
+        (find-recurring-freq*
+         (rotate-list ops)
+         (+ (first ops) acc)
+         (begin (set-add! seen acc) seen))))
+  (find-recurring-freq* ops 0 (mutable-set)))
 
-(define (rotate-list lst)
-  (append (rest lst) (cons (first lst) null)))
 
-(find-recurring-freq input 0 (mutable-set))
+(find-recurring-freq input)
